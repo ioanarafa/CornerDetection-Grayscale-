@@ -46,14 +46,11 @@ void harrisCorner(const Mat& srcGray, Mat& dst) {
                 bool isMax = true;
                 for (int u = -1; u <= 1 && isMax; u++) {
                     for (int v = -1; v <= 1 && isMax; v++) {
-                        if (responseNorm.at<float>(i + u, j + v) > val) {
+                        if (responseNorm.at<float>(i + u, j + v) > val)
                             isMax = false;
-                        }
                     }
                 }
-                if (isMax) {
-                    dstTemp.at<uchar>(i, j) = 255;
-                }
+                if (isMax) dstTemp.at<uchar>(i, j) = 255;
             }
         }
     }
@@ -67,8 +64,6 @@ void harrisCorner(const Mat& srcGray, Mat& dst) {
         }
     }
 }
-
-
 
 void shiTomasi(const Mat& srcGray, Mat& dst) {
     Mat gray;
@@ -113,14 +108,11 @@ void shiTomasi(const Mat& srcGray, Mat& dst) {
                 bool isMax = true;
                 for (int u = -1; u <= 1 && isMax; u++) {
                     for (int v = -1; v <= 1 && isMax; v++) {
-                        if (responseNorm.at<float>(i + u, j + v) > val) {
+                        if (responseNorm.at<float>(i + u, j + v) > val)
                             isMax = false;
-                        }
                     }
                 }
-                if (isMax) {
-                    dstTemp.at<uchar>(i, j) = 255;
-                }
+                if (isMax) dstTemp.at<uchar>(i, j) = 255;
             }
         }
     }
@@ -136,24 +128,54 @@ void shiTomasi(const Mat& srcGray, Mat& dst) {
 }
 
 
+Mat rotateImage(const Mat& src, double angle) {
+    Point2f center(src.cols / 2.0F, src.rows / 2.0F);
+    Mat rot = getRotationMatrix2D(center, angle, 1.0);
+    Mat dst;
+    warpAffine(src, dst, rot, src.size(), INTER_LINEAR, BORDER_CONSTANT, Scalar(255));
+    return dst;
+}
 
 int main() {
-    Mat srcColor = imread("house2.png", IMREAD_COLOR);
-    if (srcColor.empty()) {
-        cerr << "Eroare: imaginea nu a fost gasita!" << endl;
+    Mat src = imread("house2.png");
+    if (src.empty()) {
+        cerr << "Imaginea nu a fost găsită!" << endl;
         return -1;
     }
 
-    Mat grayImg;
-    cvtColor(srcColor, grayImg, COLOR_BGR2GRAY);
+    Mat gray, grayRotated;
+    cvtColor(src, gray, COLOR_BGR2GRAY);
+    grayRotated = rotateImage(gray, 45);
 
-    Mat harrisResult, shiTomasiResult;
-    harrisCorner(grayImg, harrisResult);
-    shiTomasi(grayImg, shiTomasiResult);
+    // Harris original si rotit
+    Mat harrisOrig, harrisRotated;
+    harrisCorner(gray, harrisOrig);
+    harrisCorner(grayRotated, harrisRotated);
 
-    imshow("Harris Corner Detection ", harrisResult);
-    imshow("Shi-Tomasi Corner Detection ", shiTomasiResult);
+    // Shi-Tomasi original si rotit
+    Mat shiOrig, shiRotated;
+    shiTomasi(gray, shiOrig);
+    shiTomasi(grayRotated, shiRotated);
+
+    imshow("Harris - Original", harrisOrig);
+    //imshow("Harris - Rotit 45°", harrisRotated);
+    imshow("Shi-Tomasi - Original", shiOrig);
+    //imshow("Shi-Tomasi - Rotit 45°", shiRotated);
+
+    /*
+    // Test Case : Cerc negru pe fundal alb
+    Mat circleImg = Mat::ones(400, 400, CV_8UC1) * 255;
+    circle(circleImg, Point(200, 200), 100, Scalar(0), FILLED);
+
+    imshow("Imagine originala", circleImg);
+    Mat harrisCircle, shiCircle;
+    harrisCorner(circleImg, harrisCircle);
+    shiTomasi(circleImg, shiCircle);
+
+    imshow("Harris - Cerc negru", harrisCircle);
+    imshow("Shi-Tomasi - Cerc negru", shiCircle);
+    */
+
     waitKey(0);
-
     return 0;
 }
