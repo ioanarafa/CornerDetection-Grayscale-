@@ -137,7 +137,7 @@ Mat rotateImage(const Mat& src, double angle) {
 }
 
 int main() {
-    Mat src = imread("house2.png");
+    Mat src = imread("house.png");
     if (src.empty()) {
         cerr << "Imaginea nu a fost găsită!" << endl;
         return -1;
