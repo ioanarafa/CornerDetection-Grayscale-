@@ -1,3 +1,11 @@
+PiProject Folder:
+  This folder contains the final version of the project using manually implemented Harris and Shi-Tomasi algorithms, without relying on OpenCV’s predefined corner detection functions. It includes a custom implementation of gradient calculation, corner response, and non-maximum suppression.
+
+PiPredefinit Folder:
+  This folder contains an alternative version of the project that uses OpenCV’s predefined functions, such as cornerHarris() and goodFeaturesToTrack() (used with CMake configuration). It demonstrates how the same results can be obtained using built-in tools from the OpenCV library.
+
+PiProject Folder:
+
 This project focuses on detecting corners in grayscale images using two well-known algorithms: Harris Corner Detection and Shi-Tomasi (Good Features to Track). The application is implemented in C++ using the OpenCV library and follows a standard computer vision pipeline: image loading, grayscale conversion, corner detection, and visualization.
 
 The input image is read in color format and then converted to grayscale using cv::cvtColor, as corner detection relies on intensity gradients rather than color information. The Harris algorithm computes a corner response function using the eigenvalues of the autocorrelation matrix and highlights pixels with strong local intensity changes. The response is normalized and thresholded, and corners are visualized with black circles.
